@@ -17,14 +17,11 @@ defmodule Cryptoparser do
     # open each in openoffice and re-save it to fix the formatting. The file is missing a comma at the end of each row
     table_header = [["Type","Buy","Cur.","Sell","Cur.","Fee","Cur.","Exchange","Group","Comment","Date"]]
 
-    path = Path.expand("~/Documents/Crypto Tax/localbtc transactions/Transactions for 36Wt5w from 01-01-2017 to 31-01-2017.csv")
-
     folder_path = Path.expand("~/Documents/Crypto Tax/localbtc transactions/")
     {:ok, files } = File.ls(folder_path)
 
-    file_paths = Enum.map(files, fn (file) -> Path.join(folder_path, file) end)
-
-    rows = Stream.flat_map(file_paths, fn (fp) -> parse_file(fp) end)
+    rows = Enum.map(files, fn (file) -> Path.join(folder_path, file) end)
+    |> Stream.flat_map(fn (fp) -> parse_file(fp) end)
 
     rows_with_header = Stream.concat(table_header, rows)
 
